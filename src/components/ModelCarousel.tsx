@@ -6,7 +6,7 @@ import {
   Html,
   PerspectiveCamera,
 } from "@react-three/drei";
-import { Group } from "three";
+import { Group, Mesh } from "three";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 
@@ -33,11 +33,14 @@ function Model({
   const { scene } = useGLTF(config.path);
   const groupRef = useRef<Group>(null);
   
-  // Center the model
   const clonedScene = scene.clone();
   clonedScene.traverse((child) => {
-    if ("geometry" in child) {
-      child.geometry.center();
+    // Type guard to check if the child is a Mesh with geometry
+    if ((child as Mesh).geometry && (child as Mesh).isMesh) {
+      const mesh = child as Mesh;
+      if (mesh.geometry) {
+        mesh.geometry.center();
+      }
     }
   });
 
