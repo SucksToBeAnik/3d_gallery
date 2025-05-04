@@ -8,7 +8,10 @@ import {
 } from "@react-three/drei";
 import { Group, Mesh } from "three";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Link2, Loader2 } from "lucide-react";
+import "@google/model-viewer";
+import { QRCodeSVG } from "qrcode.react";
+import Link from "next/link";
 
 const modelConfigs = [
   { path: "/models/bread.glb", scale: 15 },
@@ -32,7 +35,7 @@ function Model({
 }) {
   const { scene } = useGLTF(config.path);
   const groupRef = useRef<Group>(null);
-  
+
   const clonedScene = scene.clone();
   clonedScene.traverse((child) => {
     // Type guard to check if the child is a Mesh with geometry
@@ -47,14 +50,14 @@ function Model({
   // Trigger onLoad whenever visibility changes to true
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    
+
     if (visible) {
       // Small delay to ensure the model has time to render
       timer = setTimeout(() => {
         onLoad();
       }, 300); // Slightly increased timeout for more reliability
     }
-    
+
     return () => {
       if (timer) clearTimeout(timer);
     };
@@ -71,7 +74,7 @@ export default function ModelCarousel() {
   const [currentModelIndex, setCurrentModelIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const isInitialMount = useRef(true);
-  
+
   // Don't show loading on initial mount
   useEffect(() => {
     if (isInitialMount.current) {
@@ -99,9 +102,27 @@ export default function ModelCarousel() {
       setIsTransitioning(false);
     }
   };
+  const baseUrl = window.location.origin;
+  const modelUrl = `${baseUrl}/ar-view/?model=${modelConfigs[currentModelIndex].path}`;
 
   return (
     <section className="relative w-full h-[80vh] rounded-lg overflow-hidden bg-gray-900">
+      <div className="absolute top-6 left-6 z-10 bg-white/80 p-4 rounded-lg shadow-md">
+        <p className="text-sm text-gray-800 font-medium mb-2 text-center">
+          Scan to view in AR
+        </p>
+        <QRCodeSVG
+          className="mx-auto"
+          value={modelUrl}
+          size={100}
+          fgColor="#333"
+        />
+        <p className="text-center text-sm text-gray-800 font-medium mb-2">OR</p>
+        <Link href={modelUrl} className="text-blue-400">
+          <Link2 className="h-6 w-6 inline-block mr-1" />
+          Direct Link
+        </Link>
+      </div>
       <Canvas className="w-full h-full">
         <PerspectiveCamera makeDefault position={[0, 4, 6]} fov={45} />
         <ambientLight intensity={1} />
