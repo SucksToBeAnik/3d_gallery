@@ -9,7 +9,6 @@ import {
 import { Group, Mesh } from "three";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Link2, Loader2 } from "lucide-react";
-import "@google/model-viewer";
 import { QRCodeSVG } from "qrcode.react";
 import Link from "next/link";
 

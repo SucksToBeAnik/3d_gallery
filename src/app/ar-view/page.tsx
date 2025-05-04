@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { useQueryState } from "nuqs";
 
 export default function ARViewerPage() {
-  const searchParams = useSearchParams();
-  const modelUrl = searchParams.get("model");
+  const [modelPath] = useQueryState("model");
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -23,14 +22,14 @@ export default function ARViewerPage() {
       </div>
     );
 
-  if (!modelUrl) {
+  if (!modelPath) {
     return <p className="text-center mt-20 text-red-600">No model provided.</p>;
   }
 
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center">
       <model-viewer
-        src={modelUrl}
+        src={modelPath}
         ar
         ar-modes="scene-viewer quick-look webxr"
         auto-rotate
