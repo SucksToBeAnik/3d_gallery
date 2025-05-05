@@ -1,7 +1,9 @@
 "use client";
+
 import { Suspense, useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, RectangleGoggles } from "lucide-react";
 import { useQueryState } from "nuqs";
+import { Button } from "@/components/ui/button";
 
 function ModelViewer({ modelPath }: { modelPath: string | null }) {
   const [isReady, setIsReady] = useState(false);
@@ -12,8 +14,8 @@ function ModelViewer({ modelPath }: { modelPath: string | null }) {
 
   if (!isReady) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center bg-black z-20">
-        <div className="bg-black/50 px-6 py-4 rounded-lg flex items-center">
+      <div className="flex items-center justify-center bg-black size-full min-h-screen">
+        <div className="p-6 rounded-lg flex items-center">
           <Loader2 className="h-6 w-6 text-white animate-spin mr-2" />
           <span className="text-white text-lg">Loading model...</span>
         </div>
@@ -33,14 +35,18 @@ function ModelViewer({ modelPath }: { modelPath: string | null }) {
         ar-modes="scene-viewer quick-look webxr"
         auto-rotate
         camera-controls
-        reveal="auto"
+        interaction-prompt-threshold="0"
         style={{ width: "100%", height: "100%" }}
-      />
+      >
+        <Button slot="ar-button" className="absolute bottom-4 right-4">
+          <RectangleGoggles className="h-6 w-6 mr-1" />
+          Activate AR
+        </Button>
+      </model-viewer>
     </div>
   );
 }
 
-// Loading component for Suspense fallback
 function LoadingFallback() {
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-black z-20">
