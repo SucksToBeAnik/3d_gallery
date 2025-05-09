@@ -105,7 +105,7 @@ export default function ModelCarousel() {
   const modelUrl = `${baseUrl}/ar-view/?model=${modelConfigs[currentModelIndex].path}`;
 
   return (
-    <section className="relative w-full h-[80vh] rounded-lg overflow-hidden bg-gray-900">
+    <section className="relative w-full h-[80vh] rounded-lg overflow-hidden bg-[#102831]">
       <div className="absolute top-6 left-6 z-10 bg-white/80 p-4 rounded-lg shadow-md">
         <p className="text-sm text-gray-800 font-medium mb-2 text-center">
           Scan to view in AR
