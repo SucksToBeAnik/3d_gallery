@@ -1,9 +1,18 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import ModelCarousel from "@/components/ModelCarousel";
+import { useGLTF } from "@react-three/drei";
 
-const ModelCarousel = dynamic(() => import("@/components/ModelCarousel"), {
-  ssr: false,
+const modelConfigs = [
+  {path: "/models/shawrma.glb", scale: 15},
+  { path: "/models/bread.glb", scale: 15 },
+  { path: "/models/burger.glb", scale: 25 },
+  { path: "/models/wings.glb", scale: 20 },
+];
+
+// Preload all models to improve transition experience
+modelConfigs.forEach((config) => {
+  useGLTF.preload(config.path);
 });
 
 export default function Home() {
