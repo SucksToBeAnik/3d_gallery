@@ -13,15 +13,11 @@ import { QRCodeSVG } from "qrcode.react";
 import Link from "next/link";
 
 const modelConfigs = [
+  { path: "/models/shawrma.glb", scale: 5 },
   { path: "/models/bread.glb", scale: 15 },
   { path: "/models/burger.glb", scale: 25 },
   { path: "/models/wings.glb", scale: 20 },
 ];
-
-// Preload all models to improve transition experience
-modelConfigs.forEach((config) => {
-  useGLTF.preload(config.path);
-});
 
 function Model({
   config,
