@@ -31,9 +31,9 @@ function Model({
   );
 }
 
-const store = createXRStore();
 
 export default function Page() {
+  const store = createXRStore();
   const modelPath = "/models/bread.glb";
   const [modelScale, setModelScale] = useState(15);
 
