@@ -1,9 +1,9 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, RectangleGoggles } from "lucide-react";
 import { useQueryState } from "nuqs";
-// import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 
 function ModelViewer({ modelPath }: { modelPath: string | null }) {
   const [isReady, setIsReady] = useState(false);
@@ -52,10 +52,10 @@ function ModelViewer({ modelPath }: { modelPath: string | null }) {
         interaction-prompt-threshold="0"
         style={{ width: "100%", height: "100%" }}
       >
-        {/* <Button slot="ar-button" className="absolute bottom-4 right-4">
+        <Button slot="ar-button" className="absolute bottom-4 right-4">
           <RectangleGoggles className="h-6 w-6 mr-1" />
           Activate AR
-        </Button> */}
+        </Button>
       </model-viewer>
     </div>
   );

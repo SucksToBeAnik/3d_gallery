@@ -14,6 +14,9 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, Loader2, View } from "lucide-react";
 import { useMobile } from "@/components/useMobile";
+import Link from "next/link";
+import Image from "next/image";
+import foodpandaLogo from "../../public/foodpanda.png";
 
 const modelConfigs = [
   {
@@ -64,11 +67,6 @@ const modelConfigs = [
   },
 ];
 
-// // Preload all models to improve transition experience
-// modelConfigs.forEach((config) => {
-//   useGLTF.preload(config.path);
-// });
-
 function Model({
   config,
   visible,
@@ -89,6 +87,9 @@ function Model({
       if (mesh.geometry) {
         mesh.geometry.center();
       }
+      // Enable shadows for this mesh
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
     }
   });
 
@@ -149,14 +150,6 @@ export default function ModelCarousel() {
 
   const goToPrevious = () => {
     if (currentModelIndex > 0 && !isTransitioning) {
-      // if (!modelsLoaded[currentModelIndex]) {
-      //   setIsTransitioning(true);
-      //   setModelsLoaded((prev) => {
-      //     const newLoaded = [...prev];
-      //     newLoaded[currentModelIndex] = true;
-      //     return newLoaded;
-      //   });
-      // }
       setCurrentModelIndex((prev) => prev - 1);
     }
   };
@@ -186,19 +179,38 @@ export default function ModelCarousel() {
   const currentModel = modelConfigs[currentModelIndex];
 
   return (
-    <section className="relative w-full h-full md:h-[80vh] bg-gradient-to-b from-slate-900 to-slate-800 rounded-xl overflow-hidden">
+    <section className="relative w-full h-full md:min-h-[80vh] bg-gradient-to-b from-slate-900 to-slate-800 rounded-xl">
       <div className="grid grid-cols-1 lg:grid-cols-5 h-full">
         {/* 3D Model Canvas - Takes 3/5 of the space on desktop */}
-        <div className="relative col-span-1 lg:col-span-3 h-[50vh] lg:h-full">
-          <Canvas className="w-full h-full">
+        <div className="relative col-span-1 lg:col-span-3 h-[50vh] lg:h-[80vh]">
+          <Canvas
+            className="w-full h-full"
+            shadows // Enable shadow maps
+          >
             <PerspectiveCamera
               makeDefault
               position={isMobile ? [0, 3, 8] : [0, 4, 6]}
               fov={45}
             />
-            <ambientLight intensity={1} />
-            <directionalLight position={[5, 5, 5]} intensity={1.5} />
-            <pointLight position={[-5, -5, -5]} intensity={1} />
+            <ambientLight intensity={1} />{" "}
+            {/* Reduced intensity to make shadows more visible */}
+            {/* Configure lights to cast shadows */}
+            <directionalLight position={[5, 4, 5]} intensity={1.5} castShadow />
+            <pointLight
+              position={[-5, -5, -5]}
+              intensity={0.8}
+              castShadow
+              shadow-mapSize={[1024, 1024]}
+            />
+            {/* Add a floor to receive shadows */}
+            <mesh
+              rotation={[-Math.PI / 2, 0, 0]}
+              position={[0, -1, 0]}
+              receiveShadow
+            >
+              <planeGeometry args={[20, 20]} />
+              <shadowMaterial opacity={0.2} />
+            </mesh>
             <Suspense
               fallback={
                 <Html center>
@@ -272,10 +284,10 @@ export default function ModelCarousel() {
 
         {/* Food Information Panel - Takes 2/5 of the space on desktop */}
         <Card className="col-span-1 lg:col-span-2 border-0 rounded-none shadow-none bg-white h-full py-0">
-          <CardTitle className="text-2xl md:text-3xl font-bold text-slate-800 mb-2 px-6">
+          <CardTitle className="text-2xl md:text-3xl font-bold text-slate-800 mb-2 px-0 md:px-6">
             {currentModel.name}
           </CardTitle>
-          <CardContent>
+          <CardContent className="px-0 md:px-6">
             <div className="space-y-4">
               <div>
                 <div className="flex flex-wrap items-center gap-2 mb-4">
@@ -332,18 +344,38 @@ export default function ModelCarousel() {
             </div>
           </CardContent>
 
-          <CardFooter className="mb-2 mt-auto">
-            <Button
-              variant="outline"
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
-              size="lg"
-              onClick={() =>
-                window.open(`/ar-view/?model=${currentModel.path}`, "_blank")
-              }
-            >
-              <View className="mr-2 h-4 w-4" />
-              View in AR
-            </Button>
+          <CardFooter className="mt-4 size-full px-0 md:px-6 pb-4 md:pb-0">
+            <div className="flex flex-col gap-2 size-full">
+              <Button
+                variant="outline"
+                size="lg"
+                className="bg-pink-100"
+                asChild
+              >
+                <Link
+                  href={`https://www.foodpanda.com.bd/`}
+                  target="_blank"
+                  className="flex items-center justify-center w-full"
+                >
+                  <Image
+                    src={foodpandaLogo}
+                    alt="Foodpanda Logo"
+                    className="w-4/5 sm:w-2/5 h-32 mx-auto"
+                  />
+                </Link>
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+                size="lg"
+                onClick={() =>
+                  window.open(`/ar-view/?model=${currentModel.path}`, "_blank")
+                }
+              >
+                <View className="mr-2 h-4 w-4" />
+                View in AR
+              </Button>
+            </div>
           </CardFooter>
         </Card>
       </div>
